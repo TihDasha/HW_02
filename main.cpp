@@ -11,18 +11,16 @@ void encryption(std::vector<char> bytes, int shift, int key) {
     ofs.open("2.0", std::ios::binary);
     std::cout << "Encryption" << std::endl;
     for (unsigned int i = 0; i < bytes.size(); i += 4) {
-        unsigned int gamma = 0;
+        unsigned int gamma = rand();
         char b1 = bytes[i];
         char b2 = i + 1 < bytes.size() ? bytes[i + 1] : 0u;
         char b3 = i + 2 < bytes.size() ? bytes[i + 2] : 0u;
         char b4 = i + 3 < bytes.size() ? bytes[i + 3] : 0u;
-        unsigned int xored_message = (static_cast<unsigned int>(b1) << 24u | static_cast<unsigned int>(b2) << 16u
-                         | static_cast<unsigned int>(b3) << 8u | static_cast<unsigned int>(b4)) xor gamma;
-        std::cout << "Original word" << std::endl;
-        std::cout << std::bitset<32>(xored_message) << std::endl;
+        unsigned int
+        xored_message = (static_cast<unsigned int>(b1) << 24u | static_cast<unsigned int>(b2) << 16u
+                         | static_cast<unsigned int>(b3) << 8u | static_cast<unsigned int>(b4))
+        xorgamma;
         unsigned int shifted_message = (xored_message >> shift) | ((xored_message) << (32 - shift));
-        std::cout << "Shifted word" << std::endl;
-        std::cout << std::bitset<32>(shifted_message) << std::endl;
         b1 = shifted_message >> 24;
         ofs.write(&b1, sizeof(b1));
         b2 = shifted_message >> 16;
@@ -38,26 +36,14 @@ void encryption(std::vector<char> bytes, int shift, int key) {
 void decryption(int shift, int key) {
     std::ifstream ifs;
     ifs.open("2.0", std::ios::binary);
-    /*std::string text;
-    ifs >> text;
-    ifs.close();*/
 
     std::vector<char> bytes((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 
-    /*const char* input = text.data();
-    std::vector <char> bytes;
-    for(unsigned int i = 0; i < text.size(); i++){
-        bytes.push_back(input[i]);
-    }*/
-
-    /*std::ofstream ofs;
-    ofs.open("2.0", std::ios::binary);*/
     std::vector<char> result(bytes.size());
 
     srand(key);
-    std::cout << "Decryption" << std::endl;
     for (int i = 0; i < bytes.size(); i += 4) {
-        unsigned int gamma = 0;
+        unsigned int gamma = rand();
         char b1 = bytes[i];
         char b2 = i + 1 < bytes.size() ? bytes[i + 1] : 0u;
         char b3 = i + 2 < bytes.size() ? bytes[i + 2] : 0u;
@@ -67,12 +53,8 @@ void decryption(int shift, int key) {
         unsigned int w3 = static_cast<unsigned int>(b3) << 8u & 0x0000ff00;
         unsigned int w4 = static_cast<unsigned int>(b4) & 0x000000ff;
         unsigned int decrypted_message = (w1 | w2 | w3 | w4);
-        std::cout << "Decrypted word" << std::endl;
-        std::cout << std::bitset<32>(decrypted_message) << std::endl;
         unsigned int shifted_message = (decrypted_message << shift) | ((decrypted_message) >> (32 - shift));
-        std::cout << "Shifted word" << std::endl;
-        std::cout << std::bitset<32>(shifted_message) << std::endl;
-        unsigned int result_message = shifted_message xor gamma;
+        unsigned int result_message = shifted_message xorgamma;
         result[i] = result_message >> 24;
         result[i + 1] = result_message >> 16;
         result[i + 2] = result_message >> 8;
@@ -111,11 +93,9 @@ int main(int argc, const char *argv[]) {
     std::cout << "Enter the key: ";
     std::cin >> key;
 
-    encryption(bytes, 3, key);
-
-    /*std::ofstream out;
-    out.open("/Users/tihdarya/Documents/clion projects/2.0.txt");
-    out << "test";
-    out.close();*/
-    decryption(3, key);
+    if (mode) {
+        encryption(bytes, shift, key);
+    } else {
+        decryption(shift, key);
+    }
 }
