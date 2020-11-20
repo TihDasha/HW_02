@@ -17,8 +17,8 @@ void encryption(std::vector<char> bytes, int shift, int key) {
         char b3 = i + 2 < bytes.size() ? bytes[i + 2] : 0u;
         char b4 = i + 3 < bytes.size() ? bytes[i + 3] : 0u;
         unsigned int
-        xored_message = (static_cast<unsigned int>(b1) << 24u | static_cast<unsigned int>(b2) << 16u
-                         | static_cast<unsigned int>(b3) << 8u | static_cast<unsigned int>(b4))
+                xored_message = (static_cast<unsigned int>(b1) << 24u | static_cast<unsigned int>(b2) << 16u
+                                 | static_cast<unsigned int>(b3) << 8u | static_cast<unsigned int>(b4))
         xorgamma;
         unsigned int shifted_message = (xored_message >> shift) | ((xored_message) << (32 - shift));
         b1 = shifted_message >> 24;
@@ -54,7 +54,8 @@ void decryption(int shift, int key) {
         unsigned int w4 = static_cast<unsigned int>(b4) & 0x000000ff;
         unsigned int decrypted_message = (w1 | w2 | w3 | w4);
         unsigned int shifted_message = (decrypted_message << shift) | ((decrypted_message) >> (32 - shift));
-        unsigned int result_message = shifted_message xorgamma;
+        unsigned int result_message = shifted_message
+        xorgamma;
         result[i] = result_message >> 24;
         result[i + 1] = result_message >> 16;
         result[i + 2] = result_message >> 8;
@@ -79,21 +80,20 @@ int main(int argc, const char *argv[]) {
         std::cerr << "Error: " << exception << std::endl;
     }
 
-    std::string text;
-    std::cout << "Enter the text: ";
-    std::cin >> text;
-    const char *input = text.data();
-
-    std::vector<char> bytes;
-    for (unsigned int i = 0; i < text.size(); i++) {
-        bytes.push_back(input[i]);
-    }
-
     unsigned int key, shift = 3;
     std::cout << "Enter the key: ";
     std::cin >> key;
 
     if (mode) {
+        std::string text;
+        std::cout << "Enter the text: ";
+        std::cin >> text;
+        const char *input = text.data();
+
+        std::vector<char> bytes;
+        for (unsigned int i = 0; i < text.size(); i++) {
+            bytes.push_back(input[i]);
+        }
         encryption(bytes, shift, key);
     } else {
         decryption(shift, key);
